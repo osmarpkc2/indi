@@ -217,9 +217,24 @@
     <div class="coracoes" id="coracoes"></div>
     <div class="confetti-container" id="confettiContainer"></div>
     
+    <!-- Efeitos de confete -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <!-- Áudios -->
-    <audio id="somNao" src="https://www.soundjay.com/buttons/sounds/button-10a.mp3"></audio>
-    <audio id="somFesta" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
+    <audio id="somNao" preload="auto">
+        <source src="https://www.soundjay.com/buttons/sounds/button-10a.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+    <audio id="somFesta" preload="auto">
+        <source src="https://www.soundjay.com/human/sounds/applause-8.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+    
+    <!-- Script para garantir que o confetti está carregado -->
+    <script>
+        // Espera o confetti carregar
+        window.confetti = window.confetti || function() {};
+    </script>
     
     <div class="container">
         <h1>💖 INGRID, VOCÊ É A MAIS LINDA DO MUNDO! 💖</h1>
@@ -228,128 +243,134 @@
             💋 ME DÊ UM BEIJINHO? 💋
         </div>
         
-        <img src="https://i.imgur.com/placeholder.jpg" alt="Ingrid linda" class="foto" id="foto">
+        <img src="imagem.png" alt="Ingrid linda" class="foto" id="foto">
         
         <div class="botoes">
-            <a href="https://wa.me/558899713494?text=Oi%20neneto,%20aceito%20aquele%20beijo%20!%20" class="btn btn-sim" id="btnSim">Sim!</a>
+            <a href="#" class="btn btn-sim" id="btnSim">Sim!</a>
             <button class="btn btn-nao" id="btnNao">Não</button>
         </div>
     </div>
 
     <script>
-        // Efeito do botão Não
-        const btnNao = document.getElementById('btnNao');
-        const container = document.querySelector('.botoes');
-        let jaClicouNao = false;
-        
-        function ativarFuga() {
-            if (!jaClicouNao) {
-                btnNao.style.position = 'absolute';
-                jaClicouNao = true;
-            }
+        // Espera o DOM carregar completamente
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efeito do botão Não
+            const btnNao = document.getElementById('btnNao');
+            const container = document.querySelector('.botoes');
+            let jaClicouNao = false;
             
-            // Obtém as dimensões do container
-            const container = document.querySelector('.container');
-            const containerRect = container.getBoundingClientRect();
-            
-            // Calcula as posições máximas dentro do container
-            const maxX = containerRect.width - btnNao.offsetWidth - 20;
-            const maxY = containerRect.height - btnNao.offsetHeight - 20;
-            
-            // Gera novas posições dentro do container
-            const x = Math.max(10, Math.min(maxX, Math.random() * maxX));
-            const y = Math.max(10, Math.min(maxY, Math.random() * maxY));
-            
-            // Ajusta a posição relativa ao container
-            btnNao.style.left = x + 'px';
-            btnNao.style.top = y + 'px';
-            
-            // Muda o texto do botão
-            const frases = [
-                "Impossível clicar!", 
-                "Tá difícil, né?", 
-                "Nem tenta!", 
-                "Clique no SIM, ué!", 
-                "Não adianta fugir do SIM!",
-                "Tá com medo do SIM?",
-                "O SIM é mais gostoso!",
-                "Vai, clica no SIM!",
-                "Tô te vendo aí...",
-                "O botão SIM é mais bonito!"
-            ];
-            btnNao.textContent = frases[Math.floor(Math.random() * frases.length)];
-        }
-        
-        // Toca som e ativa a fuga quando o mouse passar sobre o botão
-        btnNao.addEventListener('mouseover', function() {
-            ativarFuga();
-            document.getElementById('somNao').play().catch(e => console.log('Erro ao tocar som:', e));
-        });
-        
-        // Também ativa a fuga ao clicar, para garantir que funcione em dispositivos touch
-        btnNao.addEventListener('click', function() {
-            ativarFuga();
-            document.getElementById('somNao').play().catch(e => console.log('Erro ao tocar som:', e));
-        });
-        
-        // Cria corações flutuantes
-        function criarCoracao() {
-            const coracao = document.createElement('div');
-            coracao.className = 'coracao';
-            coracao.innerHTML = '❤️';
-            coracao.style.left = Math.random() * 100 + 'vw';
-            coracao.style.animationDuration = (Math.random() * 3 + 3) + 's';
-            document.getElementById('coracoes').appendChild(coracao);
-            
-            // Remove o coração após a animação
-            setTimeout(() => {
-                coracao.remove();
-            }, 5000);
-        }
-        
-        // Gera corações a cada 300ms
-        setInterval(criarCoracao, 300);
-        
-        // Carrega a imagem da Ingrid
-        document.getElementById('foto').src = 'imagem.png';
-        
-        // Configura o botão Sim
-        const btnSim = document.getElementById('btnSim');
-        btnSim.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Toca o som de festa
+            // Carrega os áudios
+            const somNao = document.getElementById('somNao');
             const somFesta = document.getElementById('somFesta');
-            somFesta.volume = 0.5; // Ajusta o volume
-            somFesta.play().catch(e => console.log('Erro ao tocar som de festa:', e));
             
-            // Mostra a animação de confete
-            const confettiContainer = document.getElementById('confettiContainer');
-            confettiContainer.style.display = 'block';
-            
-            // Configura o efeito de confete
-            const confettiSettings = { 
-                particleCount: 150,
-                spread: 70, 
-                origin: { y: 0.6 },
-                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
-            };
-            
-            // Dispara o confete
-            confetti(confettiSettings);
-            
-            // Abre o WhatsApp (duas abordagens diferentes para maior compatibilidade)
-            const whatsappUrl = 'https://wa.me/558899713494?text=Oi%20neneto,%20aceito%20aquele%20beijo%20!%20';
-            
-            // Tenta abrir em uma nova aba (pode ser bloqueado por alguns navegadores)
-            const newWindow = window.open(whatsappUrl, '_blank');
-            
-            // Se for bloqueado, redireciona na mesma aba após um pequeno atraso
-            if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-                setTimeout(() => {
-                    window.location.href = whatsappUrl;
-                }, 1000);
+            function ativarFuga() {
+                if (!jaClicouNao) {
+                    btnNao.style.position = 'absolute';
+                    jaClicouNao = true;
+                }
+                
+                // Obtém as dimensões do container
+                const container = document.querySelector('.container');
+                const containerRect = container.getBoundingClientRect();
+                
+                // Calcula as posições máximas dentro do container
+                const maxX = containerRect.width - btnNao.offsetWidth - 20;
+                const maxY = containerRect.height - btnNao.offsetHeight - 20;
+                
+                // Gera novas posições dentro do container
+                const x = Math.max(10, Math.min(maxX, Math.random() * maxX));
+                const y = Math.max(10, Math.min(maxY, Math.random() * maxY));
+                
+                // Ajusta a posição relativa ao container
+                btnNao.style.left = x + 'px';
+                btnNao.style.top = y + 'px';
+                
+                // Muda o texto do botão
+                const frases = [
+                    "Impossível clicar!", 
+                    "Tá difícil, né?", 
+                    "Nem tenta!", 
+                    "Clique no SIM, ué!", 
+                    "Não adianta fugir do SIM!",
+                    "Tá com medo do SIM?",
+                    "O SIM é mais gostoso!",
+                    "Vai, clica no SIM!",
+                    "Tô te vendo aí...",
+                    "O botão SIM é mais bonito!"
+                ];
+                btnNao.textContent = frases[Math.floor(Math.random() * frases.length)];
             }
+            
+            // Toca som e ativa a fuga quando o mouse passar sobre o botão
+            btnNao.addEventListener('mouseover', function() {
+                ativarFuga();
+                somNao.currentTime = 0; // Reinicia o som se já estiver tocando
+                somNao.play().catch(e => console.log('Erro ao tocar som:', e));
+            });
+            
+            // Também ativa a fuga ao clicar, para garantir que funcione em dispositivos touch
+            btnNao.addEventListener('click', function(e) {
+                e.preventDefault();
+                ativarFuga();
+                somNao.currentTime = 0;
+                somNao.play().catch(e => console.log('Erro ao tocar som:', e));
+            });
+            
+            // Cria corações flutuantes
+            function criarCoracao() {
+                const coracao = document.createElement('div');
+                coracao.className = 'coracao';
+                coracao.innerHTML = '❤️';
+                coracao.style.left = Math.random() * 100 + 'vw';
+                coracao.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                document.getElementById('coracoes').appendChild(coracao);
+                
+                // Remove o coração após a animação
+                setTimeout(() => {
+                    if (coracao.parentNode) {
+                        coracao.remove();
+                    }
+                }, 5000);
+            }
+            
+            // Gera corações a cada 300ms
+            const coracaoInterval = setInterval(criarCoracao, 300);
+            
+            // Configura o botão Sim
+            const btnSim = document.getElementById('btnSim');
+            btnSim.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Toca o som de festa
+                somFesta.volume = 0.5;
+                somFesta.play().catch(e => console.log('Erro ao tocar som de festa:', e));
+                
+                // Mostra a animação de confete
+                const confettiContainer = document.getElementById('confettiContainer');
+                confettiContainer.style.display = 'block';
+                
+                // Dispara o confete se a função estiver disponível
+                if (window.confetti) {
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']
+                    });
+                }
+                
+                // Redireciona para o WhatsApp após 1.5 segundos
+                setTimeout(() => {
+                    window.location.href = 'https://wa.me/558899713494?text=Oi%20neneto,%20aceito%20aquele%20beijo%20!%20';
+                }, 1500);
+            });
+            
+            // Para a animação de corações quando a página não estiver visível
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    clearInterval(coracaoInterval);
+                }
+            });
         });
     </script>
 </body>
