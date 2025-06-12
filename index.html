@@ -338,10 +338,8 @@
             // Dispara o confete
             confetti(confettiSettings);
             
-            // Redireciona para o WhatsApp após 3 segundos
-            setTimeout(() => {
-                window.location.href = this.href;
-            }, 3000);
+            // Abre o WhatsApp em uma nova aba
+            window.open(this.href, '_blank');
         });
     </script>
 </body>
