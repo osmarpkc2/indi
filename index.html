@@ -338,8 +338,18 @@
             // Dispara o confete
             confetti(confettiSettings);
             
-            // Abre o WhatsApp em uma nova aba
-            window.open(this.href, '_blank');
+            // Abre o WhatsApp (duas abordagens diferentes para maior compatibilidade)
+            const whatsappUrl = 'https://wa.me/558899713494?text=Oi%20neneto,%20aceito%20aquele%20beijo%20!%20';
+            
+            // Tenta abrir em uma nova aba (pode ser bloqueado por alguns navegadores)
+            const newWindow = window.open(whatsappUrl, '_blank');
+            
+            // Se for bloqueado, redireciona na mesma aba após um pequeno atraso
+            if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                setTimeout(() => {
+                    window.location.href = whatsappUrl;
+                }, 1000);
+            }
         });
     </script>
 </body>
